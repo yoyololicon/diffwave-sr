@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Inpainting in the Frequency - Universal Speech Super-Resolution with Diffusion Models
 
 You can use the [editor on GitHub](https://github.com/yoyololicon/diffwave-sr/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
