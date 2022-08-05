@@ -14,7 +14,7 @@ unconditional audio generation model, our method can generate high quality 48 kH
 rates. Evaluation on VCTK multi-speaker benchmark shows
 state-of-the-art results.
 
-### Animation of the Inpainting Process (200 steps)
+### Animation of the Inpainting Process (200 steps, 12k to 48k)
 
 ![](ani/generation.gif)
 
