@@ -1,6 +1,6 @@
 ## Inpainting in the Frequency - Universal Speech Super-Resolution with Diffusion Models
 
-https://user-images.githubusercontent.com/17811395/182999590-2ebe75c5-9407-492b-9d9c-528dbe56806a.mp4
+![](ani/generation.gif)
 
 You can use the [editor on GitHub](https://github.com/yoyololicon/diffwave-sr/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
