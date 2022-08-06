@@ -18,3 +18,8 @@ state-of-the-art results.
 
 ![](ani/generation.gif)
 
+### Samples: 24k to 48k, 50 steps
+
+| Input | Target | NU-Wave | NU-Wave+ | WSRGlow | Ours |
+| ----- | ------ | ------- | -------- | ------- | ---- |
+| <audio src="samples/x2/p360_001_mic1.wav" controls="" preload=""></audio> | | | | | | |
