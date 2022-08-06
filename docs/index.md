@@ -1,11 +1,3 @@
----
-layout: default
----
-
-testing.
-
-## Abstract
-
 Current successful audio suepr-resolution models are based on supervised training, where a paired of input and output is given as guidance. 
 Despite its strong performance in practice, these methods cannot generalize to data generated outside their training settings, such as a fixed upscaling rate or a range of input sampling rates. 
 In this work, we leverage the recent success of diffusion models on solving inverse problems and introduce a new inference algorithm for diffusion models to do audio super-resolution. 
