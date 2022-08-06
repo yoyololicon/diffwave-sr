@@ -39,5 +39,5 @@ state-of-the-art results.
 
 | Input | Target | WSRGlow | Ours |
 | ----- | ------ | ------- | ---- |
-| <audio src="samples/x4/p376_007_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p376_007_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-wsrglow/p376_007_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-mcg/p376_007_mic1.wav" controls="" preload=""></audio> |
-| <audio src="samples/x4/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-wsrglow/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-mcg/s5_008_mic1.wav" controls="" preload=""></audio> |
+| <audio src="samples/x4/p376_007_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p376_007_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-wsrglow/p376_007_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-mcg-T200/p376_007_mic1.wav" controls="" preload=""></audio> |
+| <audio src="samples/x4/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-wsrglow/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-mcg-T200/s5_008_mic1.wav" controls="" preload=""></audio> |
