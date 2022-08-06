@@ -14,7 +14,7 @@ unconditional audio generation model, our method can generate high quality 48 kH
 rates. Evaluation on VCTK multi-speaker benchmark shows
 state-of-the-art results.
 
-### Animation of the Inpainting Process (200 steps, 12k to 48k)
+### Animation of the Bandwidth Extension Process (200 steps, 12k to 48k)
 
 ![](ani/generation.gif)
 
@@ -22,4 +22,4 @@ state-of-the-art results.
 
 | Input | Target | NU-Wave | NU-Wave+ | WSRGlow | Ours |
 | ----- | ------ | ------- | -------- | ------- | ---- |
-| <audio src="samples/x2/p360_001_mic1.wav" controls="" preload=""></audio> | | | | | | |
+| <audio src="samples/x2/p360_001_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p360_001_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-nuwave/p360_001_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-nuwave+/p360_001_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-wsrglow/p360_001_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-mcg/p360_001_mic1.wav" controls="" preload=""></audio> |
