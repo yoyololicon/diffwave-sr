@@ -18,7 +18,7 @@ state-of-the-art results.
 
 ![](ani/generation.gif)
 
-### Samples: 24k to 48k, 50 steps, $\eta = 0.67$
+### Samples: 24k to 48k, 50 steps
 
 | Input | Target | NU-Wave | NU-Wave+ | WSRGlow | Ours |
 | ----- | ------ | ------- | -------- | ------- | ---- |
@@ -26,7 +26,7 @@ state-of-the-art results.
 | <audio src="samples/x2/p361_002_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p361_002_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-nuwave/p361_002_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-nuwave+/p361_002_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-wsrglow/p361_002_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-mcg/p361_002_mic1.wav" controls="" preload=""></audio> |
 | <audio src="samples/x2/p362_003_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p362_003_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-nuwave/p362_003_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-nuwave+/p362_003_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-wsrglow/p362_003_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-mcg/p362_003_mic1.wav" controls="" preload=""></audio> |
 
-### Samples: 16k to 48k, 50 steps, $\eta = 1$
+### Samples: 16k to 48k, 50 steps
 
 | Input | Target | NU-Wave | NU-Wave+ | WSRGlow | Ours |
 | ----- | ------ | ------- | -------- | ------- | ---- |
@@ -35,7 +35,7 @@ state-of-the-art results.
 | <audio src="samples/x3/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave+/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-wsrglow/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-mcg/p374_006_mic1.wav" controls="" preload=""></audio> |
 
 
-### Samples: 12k to 48k, 200 steps, $\eta = 0.33$
+### Samples: 12k to 48k, 200 steps
 
 | Input | Target | WSRGlow | Ours |
 | ----- | ------ | ------- | ---- |
