@@ -18,7 +18,7 @@ from multiprocessing import Process, Queue, set_start_method
 from functools import partial
 from kazane import Decimate, Upsample
 
-from utils.utils import gamma2snr, snr2as, gamma2as, gamma2logas, get_instance
+from utils import gamma2snr, snr2as, gamma2as, gamma2logas, get_instance
 import models as module_arch
 
 SAMPLERATE = 48000
