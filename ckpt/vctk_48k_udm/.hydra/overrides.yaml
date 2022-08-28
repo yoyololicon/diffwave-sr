@@ -1,0 +1,10 @@
+- train_T=0
+- scheduler.patience=1000000
+- loader.batch_size=12
+- dataset.size=120000
+- dataset.segment=32768
+- model.res_channels=64
+- model.layers=30
+- model.dilation_base=2
+- model.cycle_length=10
+- checkpoint=/home/ycy/data-disk/DeepLearning/diffwave/outputs/2022-05-28/15-46-48/saved/training_checkpoint_300000.pt

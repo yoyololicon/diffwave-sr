@@ -1,0 +1,43 @@
+model:
+  _target_: models.UnconditionalDiffWave
+  res_channels: 64
+  layers: 30
+  T: 1
+  dilation_base: 2
+  cycle_length: 10
+dataset:
+  _target_: datasets.RandomWAVDataset
+  data_dir: ~/data-disk/Datasets/VCTK-Corpus-0.92/wav48_silence_trimmed/train
+  size: 120000
+  segment: 32768
+  deterministic: false
+optimizer:
+  _target_: torch.optim.Adam
+  lr: 0.0002
+seed: 2434
+checkpoint: /home/ycy/data-disk/DeepLearning/diffwave/outputs/2022-05-28/15-46-48/saved/training_checkpoint_300000.pt
+epochs: 60
+save_dir: saved/
+log_dir: runs/
+sr: 48000
+eval_dur: 3
+train_T: 0
+eval_T: 200
+extra_monitor_metrics:
+- kld
+- ll
+- loss_T
+with_amp: true
+speaker_emb_path: null
+ema_momentum: 0.0001
+loader:
+  batch_size: 12
+  shuffle: false
+  drop_last: false
+  num_workers: 4
+  pin_memory: true
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  factor: 0.3
+  patience: 1000000
+  verbose: true
