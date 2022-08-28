@@ -215,11 +215,6 @@ def reverse_manifold(y_hat,
         s = t - 1
         noise_hat = torch.zeros_like(z_t)
         correction_grad = torch.zeros_like(z_t)
-        # chunks = math.ceil((z_t.shape[1] - overlap) / hop_size)
-        # new_hop_size = (z_t.shape[1] - overlap) // chunks + 1
-        # if new_hop_size % 12:
-        #     new_hop_size += 12 - new_hop_size % 12
-        # new_window_size = new_hop_size + overlap
         for i in range(0, z_t.shape[1] - overlap, hop_size):
             indexes = slice(i, i + window_size)
             sub_z_t = z_t[:, indexes].clone().requires_grad_(True)
@@ -230,7 +225,6 @@ def reverse_manifold(y_hat,
                               y_hat[:, indexes], reduction='sum')
             g, *_ = grad(loss, sub_z_t)
             torch.nan_to_num_(g, nan=0)
-            # assert not torch.isnan(g).any(), 'gradient contains nan'
             sub_noise_hat = sub_noise_hat.detach()
             if i > 0:
                 noise_hat[:, i:i+overlap] *= 1 - p
@@ -501,9 +495,6 @@ if __name__ == '__main__':
 
     vctk_path = Path(args.vctk)
     test_files = list(vctk_path.glob('**/*.wav'))
-
-    # if args.out_dir is not None:
-    #     os.makedirs(args.out_dir, exist_ok=True)
 
     for filename in test_files:
         file_q.put(filename)
