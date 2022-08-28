@@ -1,0 +1,9 @@
+torch
+torchaudio
+torchinfo
+tqdm
+matplotlib
+pytorch-ignite
+hydra-core
+contiguous-params
+kazane
