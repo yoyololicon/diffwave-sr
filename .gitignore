@@ -1,7 +1,5 @@
 *.pyc
 *tfevents.*
-*.pt
-*.pth
 generated/*
 outputs/*
 test_folder/*
