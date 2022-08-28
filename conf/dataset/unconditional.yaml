@@ -1,0 +1,5 @@
+_target_: datasets.RandomWAVDataset
+data_dir: ~/data-disk/Datasets/VCTK-Corpus-0.92/wav48_silence_trimmed/train
+size: 60000
+segment: 72000
+deterministic: false

@@ -1,0 +1,6 @@
+_target_: models.HyperDiffWave
+res_channels: 64
+layers: 40
+T: 1
+dilation_base: 3
+cycle_length: 8

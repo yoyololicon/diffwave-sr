@@ -1,0 +1,36 @@
+defaults:
+  - model: unconditional
+  - dataset: unconditional
+  - optimizer: adam
+  - _self_
+
+
+seed: 2434
+checkpoint: null
+epochs: 60
+save_dir: "saved/"
+log_dir: "runs/"
+sr: 48000
+eval_dur: 3
+train_T: 1000
+eval_T: 200
+extra_monitor_metrics:
+  - kld
+  - ll
+  - loss_T
+with_amp: true
+speaker_emb_path: null
+ema_momentum: 0.0001
+
+loader:
+  batch_size: 6
+  shuffle: false
+  drop_last: false
+  num_workers: 4
+  pin_memory: true
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  factor: 0.3
+  patience: 300000
+  verbose: true

@@ -1,0 +1,6 @@
+_target_: models.UnconditionalDiffWave
+res_channels: 64
+layers: 30
+T: 1
+dilation_base: 2
+cycle_length: 10

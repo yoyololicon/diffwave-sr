@@ -1,0 +1,9 @@
+*.pyc
+*tfevents.*
+*.pt
+*.pth
+generated/*
+outputs/*
+test_folder/*
+.ipynb_checkpoints/*
+*.mp4
