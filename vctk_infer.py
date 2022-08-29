@@ -22,6 +22,12 @@ from utils import gamma2snr, snr2as, gamma2as, gamma2logas, get_instance
 import models as module_arch
 
 SAMPLERATE = 48000
+sinc_kwargs = {
+    'roll_off': 0.962,
+    'num_zeros': 128,
+    'window_func': partial(torch.kaiser_window, periodic=False,
+                           beta=14.769656459379492),
+}
 
 
 class LowPass(nn.Module):
@@ -466,14 +472,6 @@ if __name__ == '__main__':
         with torch.no_grad():
             gamma, steps = scheduler(t)
 
-    sinc_kwargs = {
-        'q': args.rate,
-        'roll_off': 0.962,
-        'num_zeros': 128,
-        'window_func': partial(torch.kaiser_window, periodic=False,
-                               beta=14.769656459379492),
-    }
-
     file_q = Queue()
     result_q = Queue()
     processes = []
@@ -482,10 +480,10 @@ if __name__ == '__main__':
         device = f'cuda:{i}'
         evaluater = LSD()
         if args.downsample_type == 'sinc':
-            downsampler = Decimate(**sinc_kwargs)
+            downsampler = Decimate(q=args.rate, **sinc_kwargs)
         else:
-            downsampler = STFTDecimate(sinc_kwargs['q'])
-        upsampler = Upsample(**sinc_kwargs)
+            downsampler = STFTDecimate(args.rate)
+        upsampler = Upsample(q=args.rate, **sinc_kwargs)
 
         p = Process(target=foo, args=(
             file_q, result_q, args.rate, args.infer_type, args.lr,
