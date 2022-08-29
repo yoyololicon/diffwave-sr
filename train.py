@@ -1,7 +1,6 @@
 import importlib
 import torch
 from torch import optim, nn
-from torch.autograd import grad
 from torch.cuda import amp
 from torch.distributed.optim import ZeroRedundancyOptimizer
 from torchinfo import summary
@@ -14,7 +13,6 @@ from ignite.contrib.engines import common
 from ignite import distributed as idist
 import hydra
 from omegaconf import DictConfig, OmegaConf
-from hydra.core.hydra_config import HydraConfig
 from itertools import chain
 from contiguous_params import ContiguousParams
 
@@ -22,7 +20,6 @@ from utils import gamma2logas, get_instance, gamma2snr, snr2as, gamma2as
 from loss import diffusion_elbo
 from inference import reverse_process_new
 from models import NoiseScheduler, LogSNRLinearScheduler
-import datasets
 
 
 def get_logger(trainer, model, noise_scheduler, optimizer, log_dir, model_name):
@@ -298,7 +295,7 @@ def training(local_rank, cfg: DictConfig):
         tb_logger.close()
 
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(config_path="conf", config_name="config", version_base=None)
 def run(cfg: DictConfig):
     backend = 'nccl'
     dist_configs = {
