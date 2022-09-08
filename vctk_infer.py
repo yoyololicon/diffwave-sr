@@ -1,5 +1,6 @@
 import argparse
 from copy import deepcopy
+from typing import Union
 import math
 import os
 from pathlib import Path
@@ -17,6 +18,7 @@ from typing import Callable, List, Tuple
 from multiprocessing import Process, Queue, set_start_method
 from functools import partial
 from kazane import Decimate, Upsample
+from samplerate import resample
 
 from utils import gamma2snr, snr2as, gamma2as, gamma2logas, get_instance
 import models as module_arch
@@ -231,6 +233,7 @@ def reverse_manifold(y_hat,
                               y_hat[:, indexes], reduction='sum')
             g, *_ = grad(loss, sub_z_t)
             torch.nan_to_num_(g, nan=0)
+            assert not torch.isnan(g).any(), 'NaN gradient'
             sub_noise_hat = sub_noise_hat.detach()
             if i > 0:
                 noise_hat[:, i:i+overlap] *= 1 - p
@@ -240,6 +243,9 @@ def reverse_manifold(y_hat,
 
             noise_hat[:, indexes] += sub_noise_hat
             correction_grad[:, indexes] += g
+
+        assert not torch.isnan(noise_hat).any(), 'NaN noise_hat'
+        assert not torch.isnan(correction_grad).any(), 'NaN correction_grad'
 
         mu = (z_t - var[t].sqrt() * c[s] * noise_hat) * alpha_st[s]
         mu -= correction_grad * lr
@@ -264,7 +270,7 @@ def reverse_manifold(y_hat,
     return final
 
 
-def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float,
+def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float, target_sr: Union[int, None],
         model, evaluater, downsampler, upsampler, gamma, steps):
     try:
         alpha = gamma2as(gamma)[0]
@@ -274,8 +280,6 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float,
 
             raw_y, sr = torchaudio.load(filename)
             raw_y = raw_y.to(device)
-            # speaker_emb = torch.load(str(filename).replace(".wav", "_emb.pt"))
-            # speaker_emb = speaker_emb.to(device).unsqueeze(0)
 
             offset = raw_y.shape[1] % q
             if offset:
@@ -332,7 +336,7 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float,
                     y_hat, gamma,
                     amp.autocast()(downsampler),
                     amp.autocast()(upsampler),
-                    amp.autocast()(lambda x, t, idx: model(
+                    amp.autocast(enabled=False)(lambda x, t, idx: model(
                         x, steps[t:t+1])),
                     lr=lr,
                     verbose=False
@@ -370,9 +374,19 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float,
                 y_recon = torch.cat(
                     [y_recon, y_recon.new_zeros(1, offset)], dim=1)
 
-            lsd = evaluater(y_recon.squeeze(), raw_y.squeeze()).item()
-            assert lsd is not torch.nan, "lsd is nan"
-            rq.put((filename, lsd, y_recon, y_lowpass))
+            y_recon, raw_y = y_recon.squeeze(), raw_y.squeeze()
+
+            assert not torch.isnan(y_recon).any(), "NaN detected"
+
+            if target_sr is not None:
+                y_recon = torch.from_numpy(
+                    resample(y_recon.cpu().numpy(), target_sr / sr, 'sinc_best')).to(device)
+                raw_y = torch.from_numpy(
+                    resample(raw_y.cpu().numpy(), target_sr / sr, 'sinc_best')).to(device)
+
+            lsd = evaluater(y_recon, raw_y).item()
+            assert not math.isnan(lsd), "lsd is nan"
+            rq.put((filename, lsd, y_recon, y_lowpass, sr))
 
     except Exception as e:
         rq.put((filename, e))
@@ -394,6 +408,8 @@ if __name__ == '__main__':
                         choices=['sinc', 'stft'], default='stft')
     parser.add_argument('--lr', type=float, default=1.,
                         help="learning rate for manifold")
+    parser.add_argument('--raw', action='store_true')
+    parser.add_argument('--target-sr', type=int, default=None)
 
     args = parser.parse_args()
 
@@ -443,7 +459,7 @@ if __name__ == '__main__':
         model.load_state_dict(state_dict)
     else:
         model = hydra.utils.instantiate(cfg.model)
-        model.load_state_dict(checkpoint['ema_model'])
+        model.load_state_dict(checkpoint['model' if args.raw else 'ema_model'])
     model.eval()
 
     for p in model.parameters():
@@ -486,7 +502,7 @@ if __name__ == '__main__':
         upsampler = Upsample(q=args.rate, **sinc_kwargs)
 
         p = Process(target=foo, args=(
-            file_q, result_q, args.rate, args.infer_type, args.lr,
+            file_q, result_q, args.rate, args.infer_type, args.lr, args.target_sr,
             deepcopy(model).to(device), evaluater.to(device), downsampler.to(
                 device), upsampler.to(device), gamma.to(device), steps.to(device)))
         processes.append(p)
@@ -502,8 +518,6 @@ if __name__ == '__main__':
 
     pbar = tqdm(total=len(test_files))
     n = 0
-
-    lsd_list = []
     cumulated_lsd = 0
     try:
         while n < len(test_files):
@@ -513,22 +527,22 @@ if __name__ == '__main__':
                 for p in processes:
                     p.terminate()
                 break
-            recon, lowpass = results
+            recon, lowpass, sr = results
             n += 1
             cumulated_lsd += (lsd - cumulated_lsd) / n
-            pbar.set_postfix(lsd=cumulated_lsd)
+            pbar.set_description(
+                f'LSD: {lsd:.4f}, Avg LSD: {cumulated_lsd:.4f}')
             pbar.update(1)
-            lsd_list.append(lsd)
 
             if args.out_dir is not None:
                 out_path = Path(args.out_dir) / filename.name
                 out_path.parent.mkdir(parents=True, exist_ok=True)
-                torchaudio.save(out_path, recon.cpu(), sample_rate=48000)
+                torchaudio.save(out_path, recon.cpu(), sample_rate=sr)
 
                 out_path = Path(args.out_dir) / "inputs" / filename.name
                 out_path.parent.mkdir(parents=True, exist_ok=True)
                 torchaudio.save(out_path, lowpass.cpu(),
-                                sample_rate=48000 // args.rate)
+                                sample_rate=sr // args.rate)
 
     except KeyboardInterrupt:
         print('Interrupted')
@@ -536,4 +550,4 @@ if __name__ == '__main__':
         for p in processes:
             p.join()
 
-    print(sum(lsd_list) / len(lsd_list), cumulated_lsd)
+    print(cumulated_lsd)
