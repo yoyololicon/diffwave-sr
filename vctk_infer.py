@@ -537,7 +537,8 @@ if __name__ == '__main__':
             if args.out_dir is not None:
                 out_path = Path(args.out_dir) / filename.name
                 out_path.parent.mkdir(parents=True, exist_ok=True)
-                torchaudio.save(out_path, recon.cpu(), sample_rate=sr)
+                torchaudio.save(
+                    out_path, recon.cpu().unsqueeze(0), sample_rate=sr)
 
                 out_path = Path(args.out_dir) / "inputs" / filename.name
                 out_path.parent.mkdir(parents=True, exist_ok=True)
