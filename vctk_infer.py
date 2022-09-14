@@ -221,34 +221,45 @@ def reverse_manifold(y_hat,
 
     for t in tqdm(range(T - 1, 0, -1), disable=not verbose):
         s = t - 1
-        noise_hat = torch.zeros_like(z_t)
-        correction_grad = torch.zeros_like(z_t)
-        for i in range(0, z_t.shape[1] - overlap, hop_size):
-            indexes = slice(i, i + window_size)
-            sub_z_t = z_t[:, indexes].clone().requires_grad_(True)
-            sub_noise_hat = inference_func(sub_z_t, t, indexes)
-            x_hat = (sub_z_t - var[t].sqrt() * sub_noise_hat) / alpha[t]
-            x_hat.clamp_(-1, 1)
-            loss = F.mse_loss(degradation_func(x_hat),
-                              y_hat[:, indexes], reduction='sum')
-            g, *_ = grad(loss, sub_z_t)
-            torch.nan_to_num_(g, nan=0)
-            assert not torch.isnan(g).any(), 'NaN gradient'
-            sub_noise_hat = sub_noise_hat.detach()
-            if i > 0:
-                noise_hat[:, i:i+overlap] *= 1 - p
-                correction_grad[:, i:i+overlap] *= 1 - p
-                sub_noise_hat[:, :overlap] *= p
-                g[:, :overlap] *= p
+        # noise_hat = torch.zeros_like(z_t)
+        # correction_grad = torch.zeros_like(z_t)
+        # for i in range(0, z_t.shape[1] - overlap, hop_size):
+        #     indexes = slice(i, i + window_size)
+        #     sub_z_t = z_t[:, indexes].clone().requires_grad_(True)
+        #     sub_noise_hat = inference_func(sub_z_t, t, indexes)
+        #     x_hat = (sub_z_t - var[t].sqrt() * sub_noise_hat) / alpha[t]
+        #     x_hat.clamp_(-1, 1)
+        #     loss = F.mse_loss(degradation_func(x_hat),
+        #                       y_hat[:, indexes], reduction='sum')
+        #     g, *_ = grad(loss, sub_z_t)
+        #     torch.nan_to_num_(g, nan=0)
+        #     assert not torch.isnan(g).any(), 'NaN gradient'
+        #     sub_noise_hat = sub_noise_hat.detach()
+        #     if i > 0:
+        #         noise_hat[:, i:i+overlap] *= 1 - p
+        #         correction_grad[:, i:i+overlap] *= 1 - p
+        #         sub_noise_hat[:, :overlap] *= p
+        #         g[:, :overlap] *= p
 
-            noise_hat[:, indexes] += sub_noise_hat
-            correction_grad[:, indexes] += g
+        #     noise_hat[:, indexes] += sub_noise_hat
+        #     correction_grad[:, indexes] += g
 
-        assert not torch.isnan(noise_hat).any(), 'NaN noise_hat'
-        assert not torch.isnan(correction_grad).any(), 'NaN correction_grad'
+        # assert not torch.isnan(noise_hat).any(), 'NaN noise_hat'
+        # assert not torch.isnan(correction_grad).any(), 'NaN correction_grad'
+        z_t = z_t.requires_grad_(True)
+        noise_hat = inference_func(z_t, t, slice(None))
+        x_hat = (z_t - var[t].sqrt() * noise_hat) / alpha[t]
+        # x_hat.clamp_(-1, 1)
+        loss = F.mse_loss(degradation_func(x_hat), y_hat, reduction='sum')
+        g, *_ = grad(loss, z_t)
+        # torch.nan_to_num_(g, nan=0)
+        assert not torch.isnan(g).any(), 'NaN gradient'
+
+        noise_hat = noise_hat.detach()
+        z_t = z_t.detach()
 
         mu = (z_t - var[t].sqrt() * c[s] * noise_hat) * alpha_st[s]
-        mu -= correction_grad * lr
+        mu -= g * lr
         mu = mu - degradation_func(mu)
 
         if inter_results:
@@ -302,7 +313,7 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float, target_sr: Uni
                     amp.autocast()(downsampler),
                     amp.autocast()(upsampler),
                     amp.autocast()(lambda x, t: model(
-                        x, steps[t:t+1])),
+                        x, steps[t:t+1], 64)),
                     verbose=False
                 )
             elif infer_type == "nuwave-inpainting":
@@ -337,7 +348,7 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float, target_sr: Uni
                     amp.autocast()(downsampler),
                     amp.autocast()(upsampler),
                     amp.autocast(enabled=False)(lambda x, t, idx: model(
-                        x, steps[t:t+1])),
+                        x, steps[t:t+1], 128)),
                     lr=lr,
                     verbose=False
                 )
@@ -538,7 +549,7 @@ if __name__ == '__main__':
                 out_path = Path(args.out_dir) / filename.name
                 out_path.parent.mkdir(parents=True, exist_ok=True)
                 torchaudio.save(
-                    out_path, recon.cpu().unsqueeze(0), sample_rate=sr)
+                    out_path, recon.cpu().unsqueeze(0), sample_rate=args.target_sr if args.target_sr else sr)
 
                 out_path = Path(args.out_dir) / "inputs" / filename.name
                 out_path.parent.mkdir(parents=True, exist_ok=True)

@@ -259,7 +259,7 @@ def training(local_rank, cfg: DictConfig):
 
         @torch.no_grad()
         def generate_samples(engine):
-            z_1 = torch.randn(1, cfg.sr * cfg.eval_dur, device=device)
+            z_1 = torch.randn(1, int(cfg.sr * cfg.eval_dur), device=device)
             steps = torch.linspace(0, 1, cfg.eval_T, device=device)
             gamma, steps = noise_scheduler(steps)
 
@@ -295,7 +295,7 @@ def training(local_rank, cfg: DictConfig):
         tb_logger.close()
 
 
-@hydra.main(config_path="conf", config_name="config", version_base=None)
+@hydra.main(config_path="conf", config_name="config")
 def run(cfg: DictConfig):
     backend = 'nccl'
     dist_configs = {
