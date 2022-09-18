@@ -295,7 +295,7 @@ def training(local_rank, cfg: DictConfig):
         tb_logger.close()
 
 
-@hydra.main(config_path="conf", config_name="config", version_base=None)
+@hydra.main(config_path="conf", config_name="config")
 def run(cfg: DictConfig):
     backend = 'nccl'
     dist_configs = {
