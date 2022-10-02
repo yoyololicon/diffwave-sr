@@ -212,8 +212,8 @@ def reverse_manifold(y_hat,
 
     z_t = torch.randn_like(y_hat)
 
-    window_size = 144000
-    overlap = 12000
+    window_size = 144000 // 2
+    overlap = 12000 // 2
     hop_size = window_size - overlap
     p = torch.linspace(0, 1, overlap, device=z_t.device)
 
@@ -231,8 +231,10 @@ def reverse_manifold(y_hat,
             x_hat.clamp_(-1, 1)
             loss = F.mse_loss(degradation_func(x_hat),
                               y_hat[:, indexes], reduction='sum')
+            loss = loss / sub_noise_hat.numel()
             g, *_ = grad(loss, sub_z_t)
             torch.nan_to_num_(g, nan=0)
+            g = g * sub_noise_hat.numel()
             assert not torch.isnan(g).any(), 'NaN gradient'
             sub_noise_hat = sub_noise_hat.detach()
             if i > 0:
@@ -361,7 +363,7 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float, target_sr: Uni
                     y_hat, shifted_gamma,
                     amp.autocast()(downsampler),
                     amp.autocast()(upsampler),
-                    amp.autocast()(lambda x, t, idx: model(
+                    amp.autocast(enabled=False)(lambda x, t, idx: model(
                         x, y_hat[:, idx], band, norm_nlogsnr[t:t+1])),
                     lr=lr,
                     verbose=False
