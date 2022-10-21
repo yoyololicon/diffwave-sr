@@ -191,6 +191,29 @@ def nuwave2_reverse(y_hat, band, gamma, inference_model: Callable, verbose=True)
     return final
 
 
+@torch.no_grad()
+def nuwave2_ddim(y_hat, band, gamma, inference_model: Callable, verbose=True):
+    Pm1 = -torch.expm1((gamma[1:] - gamma[:-1]) * 0.5)
+    log_alpha, log_var = gamma2logas(gamma)
+    alpha_st = torch.exp(log_alpha[:-1] - log_alpha[1:])
+    std = log_var.mul(0.5).exp()
+    alpha = log_alpha.exp()
+    T = gamma.numel()
+
+    norm_nlogsnr = (gamma + 20) / 40
+    norm_nlogsnr.clip_(0, 1)
+    z_t = torch.randn_like(y_hat)
+
+    for t in tqdm(range(T - 1, 0, -1), disable=not verbose):
+        s = t - 1
+        noise_hat = inference_model(z_t, y_hat, band, norm_nlogsnr[t:t+1])
+        z_t.mul_(alpha_st[s]).add_(std[s] * Pm1[s] * noise_hat)
+
+    noise_hat = inference_model(z_t, y_hat, band, norm_nlogsnr[:1])
+    final = (z_t - std[0] * noise_hat) / log_alpha[0].exp()
+    return final
+
+
 def reverse_manifold(y_hat,
                      gamma,
                      downsample: Callable,
@@ -368,9 +391,33 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float, target_sr: Uni
                     lr=lr,
                     verbose=False
                 ) * scaler
+            elif infer_type == "nuwave2-inpainting":
+                scaler = y.abs().max()
+                y_hat = upsampler(y_lowpass) / scaler
+                band = y_hat.new_zeros((1, 513), dtype=torch.int64)
+                band[:, :int(513 / q)] = 1
+                shifted_gamma = gamma - 2 * scaler.log()
+                norm_nlogsnr = (shifted_gamma + 20) / 40
+                norm_nlogsnr.clip_(0, 1)
+                y_recon = reverse(
+                    y_hat, shifted_gamma,
+                    amp.autocast()(downsampler),
+                    amp.autocast()(upsampler),
+                    amp.autocast()(lambda x, t: model(
+                        x, y_hat, band, norm_nlogsnr[t:t+1])),
+                    verbose=False
+                ) * scaler
+            elif infer_type == "nuwave2-ddim":
+                scaler = y.abs().max()
+                y_hat = upsampler(y_lowpass) / scaler
+                band = y_hat.new_zeros((1, 513), dtype=torch.int64)
+                band[:, :int(513 / q)] = 1
+                y_recon = nuwave2_ddim(y_hat, band, gamma - 2 * scaler.log(),
+                                       amp.autocast()(model),
+                                       verbose=False) * scaler
             else:
                 raise ValueError(
-                    "infer_type must be one of nuwave, inpainting, nuwave-inpainting, manifold")
+                    "infer_type must be one of 'nuwave', 'inpainting', 'nuwave-inpainting', 'nuwave-manifold', 'manifold', 'nuwave2', 'nuwave2-manifold', 'nuwave2-inpainting'")
 
             if offset:
                 y_recon = torch.cat(
@@ -405,7 +452,7 @@ if __name__ == '__main__':
     parser.add_argument('--rate', type=int, default=2)
     parser.add_argument('-T', type=int, default=50)
     parser.add_argument('--infer-type', type=str,
-                        choices=['inpainting', 'nuwave', 'nuwave-inpainting', 'manifold', 'nuwave-manifold', 'nuwave2', 'nuwave2-manifold'], default='inpainting')
+                        choices=['inpainting', 'nuwave', 'nuwave-inpainting', 'manifold', 'nuwave-manifold', 'nuwave2', 'nuwave2-manifold', 'nuwave2-inpainting', 'nuwave2-ddim'], default='inpainting')
     parser.add_argument('--downsample-type', type=str,
                         choices=['sinc', 'stft'], default='stft')
     parser.add_argument('--lr', type=float, default=1.,
@@ -540,7 +587,7 @@ if __name__ == '__main__':
                 out_path = Path(args.out_dir) / filename.name
                 out_path.parent.mkdir(parents=True, exist_ok=True)
                 torchaudio.save(
-                    out_path, recon.cpu().unsqueeze(0), sample_rate=sr)
+                    out_path, recon.cpu().unsqueeze(0), sample_rate=args.target_sr if args.target_sr is not None else sr)
 
                 out_path = Path(args.out_dir) / "inputs" / filename.name
                 out_path.parent.mkdir(parents=True, exist_ok=True)
