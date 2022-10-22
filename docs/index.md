@@ -56,9 +56,9 @@ By combining the proposed method with an unconditional diffusion model, we attai
 | <audio src="samples/x3/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave+/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-wsrglow/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-mcg/p374_006_mic1.wav" controls="" preload=""></audio> | -->
 
 
-## Samples: 12k to 48k, 200 steps
+<!-- ## Samples: 12k to 48k, 200 steps
 
 | Input | Target | WSRGlow | Ours |
 | ----- | ------ | ------- | ---- |
 | <audio src="samples/x4/p376_007_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p376_007_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-wsrglow/p376_007_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-mcg-T200/p376_007_mic1.wav" controls="" preload=""></audio> |
-| <audio src="samples/x4/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-wsrglow/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-mcg-T200/s5_008_mic1.wav" controls="" preload=""></audio> |
+| <audio src="samples/x4/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-wsrglow/s5_008_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x4-mcg-T200/s5_008_mic1.wav" controls="" preload=""></audio> | -->
