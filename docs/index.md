@@ -10,6 +10,8 @@ By combining the proposed method with an unconditional diffusion model, we attai
 
 ## Samples: 24k to 48k, 50 steps
 
+We recommend using headphones for this section.
+
 |            | p360_001                                                                           | p361_002                                                                           |
 |------------|------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
 |            | ![](samples/x2/p360_001_mic1.png)                                                  | ![](samples/x2/p361_002_mic1.png)                                                  |
@@ -32,6 +34,8 @@ By combining the proposed method with an unconditional diffusion model, we attai
 
 
 ## Samples: 16k to 48k, 50 steps
+
+We recommend using headphones for this section.
 
 |            | p363_004                                                                           | p364_005                                                                           |
 |------------|------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
