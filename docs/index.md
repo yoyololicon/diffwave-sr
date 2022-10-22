@@ -27,7 +27,7 @@ By combining the proposed method with an unconditional diffusion model, we attai
 |            | ![](samples/x2-wsrglow/p360_001_mic1.png)                                          | ![](samples/x2-wsrglow/p361_002_mic1.png)                                          |
 | WSRGlow    | <audio src="samples/x2-wsrglow/p360_001_mic1.wav" controls="" preload=""></audio>  | <audio src="samples/x2-wsrglow/p361_002_mic1.wav" controls="" preload=""></audio>  |
 |            | ![](samples/x2-mcg/p360_001_mic1.png)                                              | ![](samples/x2-mcg/p361_002_mic1.png)                                              |
-| Ours       | <audio src="samples/x2-mcg/p360_001_mic1.wav" controls="" preload=""></audio>      | <audio src="samples/x2-mcg/p361_002_mic1.wav" controls="" preload=""></audio>      |
+| UDM+       | <audio src="samples/x2-mcg/p360_001_mic1.wav" controls="" preload=""></audio>      | <audio src="samples/x2-mcg/p361_002_mic1.wav" controls="" preload=""></audio>      |
 
 
 
@@ -50,26 +50,26 @@ By combining the proposed method with an unconditional diffusion model, we attai
 |            | ![](samples/x3-wsrglow/p363_004_mic1.png)                                          | ![](samples/x3-wsrglow/p364_005_mic1.png)                                          |
 | WSRGlow    | <audio src="samples/x3-wsrglow/p363_004_mic1.wav" controls="" preload=""></audio>  | <audio src="samples/x3-wsrglow/p364_005_mic1.wav" controls="" preload=""></audio>  |
 |            | ![](samples/x3-mcg/p363_004_mic1.png)                                              | ![](samples/x3-mcg/p364_005_mic1.png)                                              |
-| Ours       | <audio src="samples/x3-mcg/p363_004_mic1.wav" controls="" preload=""></audio>      | <audio src="samples/x3-mcg/p364_005_mic1.wav" controls="" preload=""></audio>      |
+| UDM+       | <audio src="samples/x3-mcg/p363_004_mic1.wav" controls="" preload=""></audio>      | <audio src="samples/x3-mcg/p364_005_mic1.wav" controls="" preload=""></audio>      |
 
 
 ## Samples: 8k to 16k, 50 steps
 
-|            | p374_012                                                                           | p376_233                                                                           |
-|------------|------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-|            | ![](samples/16k/x2/p374_012_mic1.png)                                                  | ![](samples/16k/x2/p376_233_mic1.png)                                                  |
-| Input      | <audio src="samples/16k/x2/p374_012_mic1.wav" controls="" preload=""></audio>          | <audio src="samples/16k/x2/p376_233_mic1.wav" controls="" preload=""></audio>          |
-|            | ![](samples/16k/origin/p374_012_mic1.png)                                              | ![](samples/16k/origin/p376_233_mic1.png)                                              |
-| Target     | <audio src="samples/16k/origin/p374_012_mic1.wav" controls="" preload=""></audio>      | <audio src="samples/16k/origin/p376_233_mic1.wav" controls="" preload=""></audio>      |
-|            | ![](samples/16k/x2-nuwave2/p374_012_mic1.png)                                          | ![](samples/16k/x2-nuwave2/p376_233_mic1.png)                                          |
-| NU-Wave 2  | <audio src="samples/16k/x2-nuwave2/p374_012_mic1.wav" controls="" preload=""></audio>  | <audio src="samples/16k/x2-nuwave2/p376_233_mic1.wav" controls="" preload=""></audio>  |
-|            | ![](samples/16k/x2-nuwave2+/p374_012_mic1.png)                                         | ![](samples/16k/x2-nuwave2+/p376_233_mic1.png)                                         |
-| NU-Wave 2+ | <audio src="samples/16k/x2-nuwave2+/p374_012_mic1.wav" controls="" preload=""></audio> | <audio src="samples/16k/x2-nuwave2+/p376_233_mic1.wav" controls="" preload=""></audio> |
-|            | ![](samples/16k/x2-nuwave2-inpaint/p374_012_mic1.png)                                         | ![](samples/16k/x2-nuwave2-inpaint/p376_233_mic1.png)                                         |
+|                    | p374_012                                                                                      | p376_233                                                                                      |
+|--------------------|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+|                    | ![](samples/16k/x2/p374_012_mic1.png)                                                         | ![](samples/16k/x2/p376_233_mic1.png)                                                         |
+| Input              | <audio src="samples/16k/x2/p374_012_mic1.wav" controls="" preload=""></audio>                 | <audio src="samples/16k/x2/p376_233_mic1.wav" controls="" preload=""></audio>                 |
+|                    | ![](samples/16k/origin/p374_012_mic1.png)                                                     | ![](samples/16k/origin/p376_233_mic1.png)                                                     |
+| Target             | <audio src="samples/16k/origin/p374_012_mic1.wav" controls="" preload=""></audio>             | <audio src="samples/16k/origin/p376_233_mic1.wav" controls="" preload=""></audio>             |
+|                    | ![](samples/16k/x2-nuwave2/p374_012_mic1.png)                                                 | ![](samples/16k/x2-nuwave2/p376_233_mic1.png)                                                 |
+| NU-Wave 2          | <audio src="samples/16k/x2-nuwave2/p374_012_mic1.wav" controls="" preload=""></audio>         | <audio src="samples/16k/x2-nuwave2/p376_233_mic1.wav" controls="" preload=""></audio>         |
+|                    | ![](samples/16k/x2-nuwave2+/p374_012_mic1.png)                                                | ![](samples/16k/x2-nuwave2+/p376_233_mic1.png)                                                |
+| NU-Wave 2+         | <audio src="samples/16k/x2-nuwave2+/p374_012_mic1.wav" controls="" preload=""></audio>        | <audio src="samples/16k/x2-nuwave2+/p376_233_mic1.wav" controls="" preload=""></audio>        |
+|                    | ![](samples/16k/x2-nuwave2-inpaint/p374_012_mic1.png)                                         | ![](samples/16k/x2-nuwave2-inpaint/p376_233_mic1.png)                                         |
 | NU-Wave 2+ w/o MCG | <audio src="samples/16k/x2-nuwave2-inpaint/p374_012_mic1.wav" controls="" preload=""></audio> | <audio src="samples/16k/x2-nuwave2-inpaint/p376_233_mic1.wav" controls="" preload=""></audio> |
-|            | ![](samples/16k/x2-nvsr/p374_012_mic1.png)                                             | ![](samples/16k/x2-nvsr/p376_233_mic1.png)                                             |
-| NVSR       | <audio src="samples/16k/x2-nvsr/p374_012_mic1.wav" controls="" preload=""></audio>     | <audio src="samples/16k/x2-nvsr/p376_233_mic1.wav" controls="" preload=""></audio>     |
-|            | ![](samples/16k/x2-mcg/p374_012_mic1.png)                                              | ![](samples/16k/x2-mcg/p376_233_mic1.png)                                              |
-| UDM+       | <audio src="samples/16k/x2-mcg/p374_012_mic1.wav" controls="" preload=""></audio>      | <audio src="samples/16k/x2-mcg/p376_233_mic1.wav" controls="" preload=""></audio>      |
-|            | ![](samples/16k/x2-inpaint/p374_012_mic1.png)                                              | ![](samples/16k/x2-inpaint/p376_233_mic1.png)                                              |
-| UDM+ w/o MCG | <audio src="samples/16k/x2-inpaint/p374_012_mic1.wav" controls="" preload=""></audio>      | <audio src="samples/16k/x2-inpaint/p376_233_mic1.wav" controls="" preload=""></audio>      |
+|                    | ![](samples/16k/x2-nvsr/p374_012_mic1.png)                                                    | ![](samples/16k/x2-nvsr/p376_233_mic1.png)                                                    |
+| NVSR               | <audio src="samples/16k/x2-nvsr/p374_012_mic1.wav" controls="" preload=""></audio>            | <audio src="samples/16k/x2-nvsr/p376_233_mic1.wav" controls="" preload=""></audio>            |
+|                    | ![](samples/16k/x2-mcg/p374_012_mic1.png)                                                     | ![](samples/16k/x2-mcg/p376_233_mic1.png)                                                     |
+| UDM+               | <audio src="samples/16k/x2-mcg/p374_012_mic1.wav" controls="" preload=""></audio>             | <audio src="samples/16k/x2-mcg/p376_233_mic1.wav" controls="" preload=""></audio>             |
+|                    | ![](samples/16k/x2-inpaint/p374_012_mic1.png)                                                 | ![](samples/16k/x2-inpaint/p376_233_mic1.png)                                                 |
+| UDM+ w/o MCG       | <audio src="samples/16k/x2-inpaint/p374_012_mic1.wav" controls="" preload=""></audio>         | <audio src="samples/16k/x2-inpaint/p376_233_mic1.wav" controls="" preload=""></audio>         |
