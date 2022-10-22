@@ -1,6 +1,6 @@
 model:
   _target_: models.UnconditionalDiffWave
-  res_channels: 64
+  res_channels: 128
   layers: 30
   T: 1
   dilation_base: 2
@@ -8,7 +8,7 @@ model:
 dataset:
   _target_: datasets.RandomWAVDataset
   data_dir: /home/ycy/data-disk/Datasets/VCTK-Corpus-0.92/wav16_silence_trimmed/train/
-  size: 120000
+  size: 40000
   segment: 32768
   deterministic: false
 optimizer:
@@ -16,7 +16,7 @@ optimizer:
   lr: 0.0002
 seed: 2434
 checkpoint: null
-epochs: 50
+epochs: 100
 save_dir: saved/
 log_dir: runs/
 sr: 16000
@@ -31,7 +31,7 @@ with_amp: true
 speaker_emb_path: null
 ema_momentum: 0.0001
 loader:
-  batch_size: 12
+  batch_size: 4
   shuffle: false
   drop_last: false
   num_workers: 4

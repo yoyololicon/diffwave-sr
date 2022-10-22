@@ -1,8 +1,9 @@
-- epochs=50
+- model.res_channels=128
+- epochs=100
 - sr=16000
 - train_T=0
-- dataset.size=120000
+- dataset.size=40000
 - dataset.segment=32768
 - dataset.data_dir=/home/ycy/data-disk/Datasets/VCTK-Corpus-0.92/wav16_silence_trimmed/train/
-- loader.batch_size=12
+- loader.batch_size=4
 - scheduler.patience=1000000

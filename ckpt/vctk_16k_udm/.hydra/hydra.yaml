@@ -112,18 +112,19 @@ hydra:
     hydra:
     - hydra.mode=RUN
     task:
-    - epochs=50
+    - model.res_channels=128
+    - epochs=100
     - sr=16000
     - train_T=0
-    - dataset.size=120000
+    - dataset.size=40000
     - dataset.segment=32768
     - dataset.data_dir=/home/ycy/data-disk/Datasets/VCTK-Corpus-0.92/wav16_silence_trimmed/train/
-    - loader.batch_size=12
+    - loader.batch_size=4
     - scheduler.patience=1000000
   job:
     name: train
     chdir: null
-    override_dirname: dataset.data_dir=/home/ycy/data-disk/Datasets/VCTK-Corpus-0.92/wav16_silence_trimmed/train/,dataset.segment=32768,dataset.size=120000,epochs=50,loader.batch_size=12,scheduler.patience=1000000,sr=16000,train_T=0
+    override_dirname: dataset.data_dir=/home/ycy/data-disk/Datasets/VCTK-Corpus-0.92/wav16_silence_trimmed/train/,dataset.segment=32768,dataset.size=40000,epochs=100,loader.batch_size=4,model.res_channels=128,scheduler.patience=1000000,sr=16000,train_T=0
     id: ???
     num: ???
     config_name: config
@@ -148,7 +149,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /mnt/Data/DeepLearning/diffwave-sr/outputs/2022-08-28/17-05-18
+    output_dir: /mnt/Data/DeepLearning/diffwave-sr/outputs/2022-09-18/17-59-41
     choices:
       optimizer: adam
       dataset: unconditional
