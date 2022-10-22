@@ -85,11 +85,15 @@ class LSD(nn.Module):
         self.hop_length = hop_length
         self.register_buffer('window', torch.hann_window(n_fft))
 
-    def forward(self, y_hat, y):
+    def forward(self, y_hat, y, ratio=None):
         Y_hat = torch.stft(y_hat, self.n_fft, hop_length=self.hop_length,
                            window=self.window, return_complex=True)
         Y = torch.stft(y, self.n_fft, hop_length=self.hop_length,
                        window=self.window, return_complex=True)
+        if ratio is not None:
+            index = int((self.n_fft // 2 + 1) * ratio)
+            Y_hat = Y_hat[:index]
+            Y = Y[:index]
         sp = Y_hat.abs().square_().clamp_(min=1e-8).log10_()
         st = Y.abs().square_().clamp_(min=1e-8).log10_()
         return (sp - st).square_().mean(0).sqrt_().mean()
