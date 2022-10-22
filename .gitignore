@@ -5,3 +5,6 @@ outputs/*
 test_folder/*
 .ipynb_checkpoints/*
 *.mp4
+udm+*
+for_pesq/*
+downsampled/*
