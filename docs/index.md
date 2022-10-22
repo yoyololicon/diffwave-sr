@@ -12,6 +12,7 @@ By combining the proposed method with an unconditional diffusion model, we attai
 
 |          | p360_001                                                                          | p361_002                                                                          |
 |----------|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+|          | ![](samples/x2/p360_001_mic1.png)                                                 | ![](samples/x2/p361_002_mic1.png)
 | Input    | <audio src="samples/x2/p360_001_mic1.wav" controls="" preload=""></audio>         | <audio src="samples/x2/p361_002_mic1.wav" controls="" preload=""></audio>         |
 | Target   | <audio src="samples/origin/p360_001_mic1.wav" controls="" preload=""></audio>     | <audio src="samples/origin/p361_002_mic1.wav" controls="" preload=""></audio>     |
 | NU-Wave  | <audio src="samples/x2-nuwave/p360_001_mic1.wav" controls="" preload=""></audio>  | <audio src="samples/x2-nuwave/p361_002_mic1.wav" controls="" preload=""></audio>  |
