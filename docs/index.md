@@ -8,6 +8,10 @@ By combining the proposed method with an unconditional diffusion model, we attai
 
 ![](ani/generation.gif)
 
+We recommend reader listen to the samples when reading the paper.
+All utterances were randomly picked from the VCTK test set.
+
+
 ## Samples: 24k to 48k, 50 steps
 
 We recommend using headphones for this section.
@@ -77,3 +81,21 @@ We recommend using headphones for this section.
 | UDM+               | <audio src="samples/16k/x2-mcg/p374_012_mic1.wav" controls="" preload=""></audio>             | <audio src="samples/16k/x2-mcg/p376_233_mic1.wav" controls="" preload=""></audio>             |
 |                    | ![](samples/16k/x2-inpaint/p374_012_mic1.png)                                                 | ![](samples/16k/x2-inpaint/p376_233_mic1.png)                                                 |
 | UDM+ w/o MCG       | <audio src="samples/16k/x2-inpaint/p374_012_mic1.wav" controls="" preload=""></audio>         | <audio src="samples/16k/x2-inpaint/p376_233_mic1.wav" controls="" preload=""></audio>         |
+
+
+## Unconditional Samples
+
+In this section, the samples were generated unconditionally, using our noise predictor with 100 steps.
+
+
+### Ancestral Sampling
+
+<audio src="samples/uncond/0.wav" controls="" preload=""></audio> 
+<audio src="samples/uncond/1.wav" controls="" preload=""></audio> 
+<audio src="samples/uncond/2.wav" controls="" preload=""></audio> 
+
+### DDIM
+
+<audio src="samples/uncond/ddim/0.wav" controls="" preload=""></audio> 
+<audio src="samples/uncond/ddim/1.wav" controls="" preload=""></audio> 
+<audio src="samples/uncond/ddim/2.wav" controls="" preload=""></audio> 
