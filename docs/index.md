@@ -1,8 +1,8 @@
-Current successful audio suepr-resolution models are based on supervised training, where a paired of input and output is given as guidance. 
-Despite its strong performance in practice, these methods cannot generalize to data generated outside their training settings, such as a fixed upscaling rate or a range of input sampling rates. 
-In this work, we leverage the recent success of diffusion models on solving inverse problems and introduce a new inference algorithm for diffusion models to do audio super-resolution. 
-Coupling with a single unconditional audio generation model, our method can generate high quality 48 kHz audio from various input sampling rates. 
-Evaluation on VCTK multi-speaker benchmark shows state-of-the-art results.
+Recently, diffusion models have been increasingly used in audio processing tasks including speech super-resolution.
+Despite its strong performance in practice, prior works employ a rather simplistic sampling process throughout the generation.
+In this paper, we introduce a novel sampling algorithm that leverages downsampled audio to condition the sampling of the diffusion.
+We show that the proposed method acts as a drop-in replacement for the vanilla sampling process, and improves performance of the existing works.
+By combining the proposed method with an unconditional diffusion model, we attain state-of-the-art results for speech super-resolusion on the VCTK Multi-Speaker benchmark.
 
 ## Animation of the Bandwidth Extension Process (200 steps, 12k to 48k)
 
