@@ -34,11 +34,26 @@ By combining the proposed method with an unconditional diffusion model, we attai
 
 ## Samples: 16k to 48k, 50 steps
 
-| Input | Target | NU-Wave | NU-Wave+ | WSRGlow | Ours |
+|          | p363_004                                                                          | p364_005                                                                          |
+|----------|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+|          | ![](samples/x3/p363_004_mic1.png)                                                 | ![](samples/x3/p364_005_mic1.png)                                                 |
+| Input    | <audio src="samples/x3/p363_004_mic1.wav" controls="" preload=""></audio>         | <audio src="samples/x3/p364_005_mic1.wav" controls="" preload=""></audio>         |
+|          | ![](samples/origin/p363_004_mic1.png)                                             | ![](samples/origin/p364_005_mic1.png)                                             |
+| Target   | <audio src="samples/origin/p363_004_mic1.wav" controls="" preload=""></audio>     | <audio src="samples/origin/p364_005_mic1.wav" controls="" preload=""></audio>     |
+|          | ![](samples/x3-nuwave/p363_004_mic1.png)                                          | ![](samples/x3-nuwave/p364_005_mic1.png)                                          |
+| NU-Wave  | <audio src="samples/x3-nuwave/p363_004_mic1.wav" controls="" preload=""></audio>  | <audio src="samples/x3-nuwave/p364_005_mic1.wav" controls="" preload=""></audio>  |
+|          | ![](samples/x3-nuwave+/p363_004_mic1.png)                                         | ![](samples/x3-nuwave+/p364_005_mic1.png)                                         |
+| NU-Wave+ | <audio src="samples/x3-nuwave+/p363_004_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave+/p364_005_mic1.wav" controls="" preload=""></audio> |
+|          | ![](samples/x3-wsrglow/p363_004_mic1.png)                                         | ![](samples/x3-wsrglow/p364_005_mic1.png)                                         |
+| WSRGlow  | <audio src="samples/x3-wsrglow/p363_004_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-wsrglow/p364_005_mic1.wav" controls="" preload=""></audio> |
+|          | ![](samples/x3-mcg/p363_004_mic1.png)                                             | ![](samples/x3-mcg/p364_005_mic1.png)                                             |
+| Ours     | <audio src="samples/x2-mcg/p363_004_mic1.wav" controls="" preload=""></audio>     | <audio src="samples/x2-mcg/p364_005_mic1.wav" controls="" preload=""></audio>     |
+
+<!-- | Input | Target | NU-Wave | NU-Wave+ | WSRGlow | Ours |
 | ----- | ------ | ------- | -------- | ------- | ---- |
 | <audio src="samples/x3/p363_004_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p363_004_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave/p363_004_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave+/p363_004_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-wsrglow/p363_004_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-mcg/p363_004_mic1.wav" controls="" preload=""></audio> |
 | <audio src="samples/x3/p364_005_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p364_005_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave/p364_005_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave+/p364_005_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-wsrglow/p364_005_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-mcg/p364_005_mic1.wav" controls="" preload=""></audio> |
-| <audio src="samples/x3/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave+/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-wsrglow/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-mcg/p374_006_mic1.wav" controls="" preload=""></audio> |
+| <audio src="samples/x3/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/origin/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-nuwave+/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-wsrglow/p374_006_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x3-mcg/p374_006_mic1.wav" controls="" preload=""></audio> | -->
 
 
 ## Samples: 12k to 48k, 200 steps
