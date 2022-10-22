@@ -12,12 +12,17 @@ By combining the proposed method with an unconditional diffusion model, we attai
 
 |          | p360_001                                                                          | p361_002                                                                          |
 |----------|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-|          | ![](samples/x2/p360_001_mic1.png)                                                 | ![](samples/x2/p361_002_mic1.png)
+|          | ![](samples/x2/p360_001_mic1.png)                                                 | ![](samples/x2/p361_002_mic1.png)                                                 |
 | Input    | <audio src="samples/x2/p360_001_mic1.wav" controls="" preload=""></audio>         | <audio src="samples/x2/p361_002_mic1.wav" controls="" preload=""></audio>         |
+|          | ![](samples/origin/p360_001_mic1.png)                                             | ![](samples/origin/p361_002_mic1.png)                                             |
 | Target   | <audio src="samples/origin/p360_001_mic1.wav" controls="" preload=""></audio>     | <audio src="samples/origin/p361_002_mic1.wav" controls="" preload=""></audio>     |
+|          | ![](samples/x2-nuwave/p360_001_mic1.png)                                          | ![](samples/x2-nuwave/p361_002_mic1.png)                                          |
 | NU-Wave  | <audio src="samples/x2-nuwave/p360_001_mic1.wav" controls="" preload=""></audio>  | <audio src="samples/x2-nuwave/p361_002_mic1.wav" controls="" preload=""></audio>  |
+|          | ![](samples/x2-nuwave+/p360_001_mic1.png)                                         | ![](samples/x2-nuwave+/p361_002_mic1.png)                                         |
 | NU-Wave+ | <audio src="samples/x2-nuwave+/p360_001_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-nuwave+/p361_002_mic1.wav" controls="" preload=""></audio> |
+|          | ![](samples/x2-wsrglow/p360_001_mic1.png)                                         | ![](samples/x2-wsrglow/p361_002_mic1.png)                                         |
 | WSRGlow  | <audio src="samples/x2-wsrglow/p360_001_mic1.wav" controls="" preload=""></audio> | <audio src="samples/x2-wsrglow/p361_002_mic1.wav" controls="" preload=""></audio> |
+|          | ![](samples/x2-mcg/p360_001_mic1.png)                                             | ![](samples/x2-mcg/p361_002_mic1.png)                                             |
 | Ours     | <audio src="samples/x2-mcg/p360_001_mic1.wav" controls="" preload=""></audio>     | <audio src="samples/x2-mcg/p361_002_mic1.wav" controls="" preload=""></audio>     |
 
 
