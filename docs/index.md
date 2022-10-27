@@ -1,8 +1,9 @@
-Recently, diffusion models have been increasingly used in audio processing tasks including speech super-resolution.
-Despite its strong performance in practice, prior works employ a rather simplistic sampling process throughout the generation.
-In this paper, we introduce a novel sampling algorithm that leverages downsampled audio to condition the sampling of the diffusion.
-We show that the proposed method acts as a drop-in replacement for the vanilla sampling process, and improves performance of the existing works.
-By combining the proposed method with an unconditional diffusion model, we attain state-of-the-art results for speech super-resolusion on the VCTK Multi-Speaker benchmark.
+Recently, diffusion models (DMs) have been increasingly used in audio processing tasks, including speech super-resolution (SR), which aims to restore high-frequency content given low-resolution speech utterances.
+This is commonly achieved by conditioning the network of noise predictor with low-resolution audio.
+In this paper, we propose a novel sampling algorithm that communicates the information of the low-resolution audio via the reverse sampling process of DMs.
+The proposed method can be a drop-in replacement for the vanilla sampling process and can significantly improve the performance of the existing works.
+Moreover, by coupling the proposed sampling method with an unconditional DM, i.e., a DM with no auxiliary inputs to its noise predictor, we can generalize it to a wide range of SR setups.
+We also attain state-of-the-art results on the VCTK Multi-Speaker benchmark with this novel formulation.
 
 ## Animation of the Bandwidth Extension Process (200 steps, 12k to 48k)
 
