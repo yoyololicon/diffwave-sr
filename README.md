@@ -13,7 +13,7 @@ Source code of the paper [**Conditioning and Sampling in Variational Diffusion M
 pip install requirements.txt
 ```
 
-2. Please convert all the data files into `.wav` format and put them under the same directory. The following commandline will train a 48 kHz UDM.
+2. Please convert all the data files into `.wav` format and put them under the same directory. The following command will train a 48 kHz UDM.
 ```commandline
 python train.py model.res_channels=64 epochs=50 sr=48000 train_T=0 dataset.size=120000 dataset.segment=32768 dataset.data_dir=/your/vctk/train/set/ loader.batch_size=12 scheduler.patience=1000000
 ```
