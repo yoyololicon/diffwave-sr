@@ -1,6 +1,6 @@
 # Speech Super-resolution with Unconditional Diffwave
 [![pages-build-deployment](https://github.com/yoyololicon/diffwave-sr/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/yoyololicon/diffwave-sr/actions/workflows/pages/pages-build-deployment)
-[![arXiv](https://img.shields.io/badge/arXiv-2210.15793-00ff00.svg)](ttps://arxiv.org/abs/2210.15793)
+[![arXiv](https://img.shields.io/badge/arXiv-2210.15793-00ff00.svg)](https://arxiv.org/abs/2210.15793)
 
 Source code of the paper [**Conditioning and Sampling in Variational Diffusion Models for Speech Super-Resolution**](https://arxiv.org/abs/2210.15793).
 
