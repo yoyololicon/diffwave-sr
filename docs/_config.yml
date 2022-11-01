@@ -1,3 +1,5 @@
 theme: jekyll-theme-cayman
 title: Conditioning and Sampling in Variational Diffusion Models for Speech Super-Resolution
 description: Chin-Yun Yu, Sung-Lin Yeh, George Fazekas, Hao Tang
+github:
+  arxiv: https://arxiv.org/abs/2210.15793

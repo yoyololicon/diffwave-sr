@@ -8,3 +8,7 @@ test_folder/*
 udm+*
 for_pesq/*
 downsampled/*
+*/vendor/*
+docs/_site/*
+docs/.bundle/*
+docs/.sass-cache/*
