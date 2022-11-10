@@ -100,14 +100,13 @@ class ChebyUpsample(nn.Module):
         self.sos = cheby1(8, 0.05, 1 / r, 'lowpass', output='sos')
 
     def forward(self, x):
-        *shape, _ = x.shape
-        x = F.upsample(x.view(-1, 1, x.size(-1)),
-                       scale_factor=self.r, mode='nearest')
+        x = torch.cat([x.unsqueeze(-1), x.new_zeros(*x.shape,
+                      self.r - 1)], dim=-1).view(*x.shape[:-1], -1)
         device = x.device
         x = x.cpu().flip(-1)
         for i in range(self.sos.shape[0]):
             x = torchaudio.functional.filtering.biquad(x, *self.sos[i])
-        return x.flip(-1).to(device).view(*shape, -1)
+        return x.flip(-1).to(device)
 
 
 class LSD(nn.Module):
