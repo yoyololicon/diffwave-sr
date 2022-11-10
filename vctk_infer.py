@@ -19,6 +19,7 @@ from multiprocessing import Process, Queue, set_start_method
 from functools import partial
 from kazane import Decimate, Upsample
 from samplerate import resample
+from scipy.signal import cheby1
 
 from utils import gamma2snr, snr2as, gamma2as, gamma2logas, get_instance
 import models as module_arch
@@ -76,6 +77,36 @@ class STFTDecimate(LowPass):
 
     def forward(self, x):
         return super().forward(x, 0)[..., ::self.r]
+
+
+class ChebyDecimate(nn.Module):
+    def __init__(self, r, *args, **kwargs):
+        super().__init__()
+        self.r = r
+        self.sos = cheby1(8, 0.05, 1 / r, 'lowpass', output='sos')
+
+    def forward(self, x):
+        device = x.device
+        x = x.cpu()
+        for i in range(self.sos.shape[0]):
+            x = torchaudio.functional.filtering.biquad(x, *self.sos[i])
+        return x[..., ::self.r].to(device)
+
+
+class ChebyUpsample(nn.Module):
+    def __init__(self, r, *args, **kwargs):
+        super().__init__()
+        self.r = r
+        self.sos = cheby1(8, 0.05, 1 / r, 'lowpass', output='sos')
+        self.upsampler = Upsample(r, **sinc_kwargs)
+
+    def forward(self, x):
+        x = self.upsampler(x)
+        device = x.device
+        x = x.cpu().flip(-1)
+        for i in range(self.sos.shape[0]):
+            x = torchaudio.functional.filtering.biquad(x, *self.sos[i])
+        return x.flip(-1).to(device)
 
 
 class LSD(nn.Module):
@@ -458,7 +489,7 @@ if __name__ == '__main__':
     parser.add_argument('--infer-type', type=str,
                         choices=['inpainting', 'nuwave', 'nuwave-inpainting', 'manifold', 'nuwave-manifold', 'nuwave2', 'nuwave2-manifold', 'nuwave2-inpainting', 'nuwave2-ddim'], default='inpainting')
     parser.add_argument('--downsample-type', type=str,
-                        choices=['sinc', 'stft'], default='stft')
+                        choices=['sinc', 'stft', 'cheby'], default='stft')
     parser.add_argument('--lr', type=float, default=1.,
                         help="learning rate for manifold")
     parser.add_argument('--raw', action='store_true')
@@ -550,9 +581,13 @@ if __name__ == '__main__':
         evaluater = LSD()
         if args.downsample_type == 'sinc':
             downsampler = Decimate(q=args.rate, **sinc_kwargs)
+            upsampler = Upsample(q=args.rate, **sinc_kwargs)
+        elif args.downsample_type == 'cheby':
+            downsampler = ChebyDecimate(r=args.rate)
+            upsampler = ChebyUpsample(r=args.rate)
         else:
             downsampler = STFTDecimate(args.rate)
-        upsampler = Upsample(q=args.rate, **sinc_kwargs)
+            upsampler = Upsample(q=args.rate, **sinc_kwargs)
 
         p = Process(target=foo, args=(
             file_q, result_q, args.rate, args.infer_type, args.lr, args.target_sr,
