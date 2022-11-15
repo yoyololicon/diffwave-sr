@@ -71,3 +71,18 @@ We'll release the script for evaluating WSRGlow and NVSR in the future.
 
 * [48 kHz](ckpt/vctk_48k_udm/saved/training_checkpoint_500000.pt)
 * [16 kHz](ckpt/vctk_16k_udm/saved/training_checkpoint_500000.pt)
+
+
+## Extending to non-zero phase response lowpass filters
+
+When using IIR low pass filter to downsample audio, it introduces non-linear phase delays, thus breaking the assumption that the frequency mask is real value.
+An easy solution to compensate for the delays is **applying the same filter again during upsampling but in a backward direction of time**.
+We conducted the same 48 kHz experiment in the paper agian but with a 8th order Chebyshev Type I low pass filter.
+
+|            | 2x | 3x |
+|------------|----|----|
+| NU-Wave    | 0.8667916475732103   | 0.9955991584912919   |
+| NU-Wave 2  |  |    |
+| NU-Wave+   |  1.0255468693118877  | 1.3233148328982787   |
+| NU-Wave 2+ |    |    |
+| UDM+       | 0.6394651938466991   | 0.7940077889237551   |
