@@ -19,7 +19,7 @@ from multiprocessing import Process, Queue, set_start_method
 from functools import partial
 from kazane import Decimate, Upsample
 from samplerate import resample
-from scipy.signal import cheby1
+from scipy.signal import cheby1, resample_poly
 
 from utils import gamma2snr, snr2as, gamma2as, gamma2logas, get_instance
 import models as module_arch
@@ -403,7 +403,10 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float, target_sr: Uni
                 )
             elif infer_type == "nuwave2":
                 scaler = y.abs().max()
-                y_hat = upsampler(y_lowpass) / scaler
+                y_hat = torch.tensor(
+                    resample_poly(y_lowpass.cpu().numpy(), q, 1, axis=-1), device=device, dtype=y.dtype
+                ) / scaler
+                # y_hat = upsampler(y_lowpass) / scaler
                 band = y_hat.new_zeros((1, 513), dtype=torch.int64)
                 band[:, :int(513 / q)] = 1
                 y_recon = nuwave2_reverse(y_hat, band, gamma - 2 * scaler.log(),
@@ -412,6 +415,9 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float, target_sr: Uni
             elif infer_type == "nuwave2-manifold":
                 scaler = y.abs().max()
                 y_hat = upsampler(y_lowpass) / scaler
+                nuwave2_cond = torch.tensor(
+                    resample_poly(y_lowpass.cpu().numpy(), q, 1, axis=-1), device=device, dtype=y.dtype
+                ) / scaler
                 band = y_hat.new_zeros((1, 513), dtype=torch.int64)
                 band[:, :int(513 / q)] = 1
                 shifted_gamma = gamma - 2 * scaler.log()
@@ -422,13 +428,16 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float, target_sr: Uni
                     amp.autocast()(downsampler),
                     amp.autocast()(upsampler),
                     amp.autocast(enabled=False)(lambda x, t, idx: model(
-                        x, y_hat[:, idx], band, norm_nlogsnr[t:t+1])),
+                        x, nuwave2_cond[:, idx], band, norm_nlogsnr[t:t+1])),
                     lr=lr,
                     verbose=False
                 ) * scaler
             elif infer_type == "nuwave2-inpainting":
                 scaler = y.abs().max()
                 y_hat = upsampler(y_lowpass) / scaler
+                nuwave2_cond = torch.tensor(
+                    resample_poly(y_lowpass.cpu().numpy(), q, 1, axis=-1), device=device, dtype=y.dtype
+                ) / scaler
                 band = y_hat.new_zeros((1, 513), dtype=torch.int64)
                 band[:, :int(513 / q)] = 1
                 shifted_gamma = gamma - 2 * scaler.log()
@@ -439,12 +448,14 @@ def foo(fq: Queue, rq: Queue, q: int, infer_type: str, lr: float, target_sr: Uni
                     amp.autocast()(downsampler),
                     amp.autocast()(upsampler),
                     amp.autocast()(lambda x, t: model(
-                        x, y_hat, band, norm_nlogsnr[t:t+1])),
+                        x, nuwave2_cond, band, norm_nlogsnr[t:t+1])),
                     verbose=False
                 ) * scaler
             elif infer_type == "nuwave2-ddim":
                 scaler = y.abs().max()
-                y_hat = upsampler(y_lowpass) / scaler
+                y_hat = torch.tensor(
+                    resample_poly(y_lowpass.cpu().numpy(), q, 1, axis=-1), device=device, dtype=y.dtype
+                ) / scaler
                 band = y_hat.new_zeros((1, 513), dtype=torch.int64)
                 band[:, :int(513 / q)] = 1
                 y_recon = nuwave2_ddim(y_hat, band, gamma - 2 * scaler.log(),
