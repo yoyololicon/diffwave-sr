@@ -77,7 +77,7 @@ We'll release the script for evaluating WSRGlow and NVSR in the future.
 
 We found that we didn't apply the same upsampling method to the condition inputs of NU-Wave 2.
 The original implementation used `scipy.signal.resample_poly`, but we used sinc interpolation instead.
-This produces some artefacts around the Nyquist frequency in the outputs, which can be observed in the demo page samples, and slightly affects the score of LSD.
+This mismatch produces some artefacts around the Nyquist frequency in the outputs, which can be observed in the old demo page samples.
 We report the correct experiment results with proper condition signal in the below tables.
 
 ### NU-Wave 2, 48 kHz
@@ -107,7 +107,7 @@ We conducted the same 48 kHz experiment in the paper again but with a 8th order 
 |            | 2x   | 3x   |
 |------------|:----:|:----:|
 | NU-Wave    | 0.87 | 1.00 |
-| NU-Wave 2  |      |      |
+| NU-Wave 2  | 0.73 | 0.87 |
 | NU-Wave+   | 1.03 | 1.32 |
-| NU-Wave 2+ |      |      |
+| NU-Wave 2+ | 0.86 | 1.00 |
 | UDM+       | 0.64 | 0.79 |
