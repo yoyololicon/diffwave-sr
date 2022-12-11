@@ -8,7 +8,7 @@ from tqdm import tqdm
 from kazane import Decimate, Upsample
 from scipy.interpolate import interp1d
 
-from vctk_infer import sinc_kwargs, LSD, STFTDecimate
+from vctk_infer import sinc_kwargs, LSD, STFTDecimate, ChebyDecimate
 
 
 if __name__ == '__main__':
@@ -19,13 +19,15 @@ if __name__ == '__main__':
     parser.add_argument('--infer-type', type=str,
                         choices=['none', 'spline', 'linear'], default='none')
     parser.add_argument('--downsample-type', type=str,
-                        choices=['sinc', 'stft'], default='stft')
+                        choices=['sinc', 'stft', 'cheby'], default='stft')
 
     args = parser.parse_args()
 
     evaluater = LSD()
     if args.downsample_type == 'sinc':
         downsampler = Decimate(q=args.rate, **sinc_kwargs)
+    elif args.downsample_type == 'cheby':
+        downsampler = ChebyDecimate(args.rate)
     else:
         downsampler = STFTDecimate(args.rate)
 
