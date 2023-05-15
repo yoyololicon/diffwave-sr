@@ -12,3 +12,5 @@ downsampled/*
 docs/_site/*
 docs/.bundle/*
 docs/.sass-cache/*
+tmp/
+test_gen/
