@@ -7,12 +7,13 @@ from torchinfo import summary
 import matplotlib.pyplot as plt
 from random import uniform
 from ignite.engine import Engine, Events
-from ignite.handlers import Checkpoint, EMAHandler
+from ignite.handlers import Checkpoint, EMAHandler, ModelCheckpoint
 from ignite.contrib.handlers.tensorboard_logger import *
 from ignite.contrib.engines import common
 from ignite import distributed as idist
 import hydra
 from omegaconf import DictConfig, OmegaConf
+import wandb
 from itertools import chain
 from contiguous_params import ContiguousParams
 
@@ -22,25 +23,39 @@ from inference import reverse_process_new
 from models import NoiseScheduler, LogSNRLinearScheduler
 
 
-def get_logger(trainer, model, noise_scheduler, optimizer, log_dir, model_name):
+def get_logger(trainer, model, noise_scheduler, optimizer, cfg: DictConfig, model_name):
     # Create a logger
     # start_time = datetime.now().strftime('%m%d_%H%M%S')
-    tb_logger = common.setup_tb_logging(
-        output_path=log_dir, trainer=trainer, optimizers=optimizer, log_every_iters=1
+    # tb_logger = common.setup_tb_logging(
+    #     output_path=log_dir, trainer=trainer, optimizers=optimizer, log_every_iters=1
+    # )
+
+    # tb_logger.attach(
+    #     trainer,
+    #     event_name=Events.EPOCH_COMPLETED,
+    #     log_handler=WeightsHistHandler(model),
+    # )
+    # tb_logger.attach(
+    #     trainer,
+    #     event_name=Events.EPOCH_COMPLETED,
+    #     log_handler=WeightsHistHandler(noise_scheduler),
+    # )
+
+    # return tb_logger
+
+    wandb_logger = common.setup_wandb_logging(
+        trainer=trainer,
+        optimizers=optimizer,
+        log_every_iters=1,
+        project="diffwave",
+        name=model_name,
+        config=OmegaConf.to_container(cfg),
     )
 
-    tb_logger.attach(
-        trainer,
-        event_name=Events.EPOCH_COMPLETED,
-        log_handler=WeightsHistHandler(model),
-    )
-    tb_logger.attach(
-        trainer,
-        event_name=Events.EPOCH_COMPLETED,
-        log_handler=WeightsHistHandler(noise_scheduler),
-    )
+    wandb_logger.watch(model, log="all")
+    wandb_logger.watch(noise_scheduler, log="all")
 
-    return tb_logger
+    return wandb_logger
 
 
 def create_trainer(
@@ -162,14 +177,14 @@ def create_trainer(
     common.setup_common_training_handlers(
         trainer,
         train_sampler=train_sampler,
-        to_save=to_save if rank == 0 else None,
-        save_every_iters=10000,
-        output_path=cfg.save_dir,
+        # to_save=to_save if rank == 0 else None,
+        # save_every_iters=10000,
+        # output_path=cfg.save_dir,
         lr_scheduler=scheduler if not is_reduce_on_plateau else None,
         output_names=["loss"] + OmegaConf.to_container(cfg.extra_monitor_metrics),
         with_pbars=True if rank == 0 else False,
         with_pbar_on_iters=True,
-        n_saved=2,
+        # n_saved=2,
         log_every_iters=1,
         clear_cuda_cache=False,
     )
@@ -186,7 +201,15 @@ def create_trainer(
             checkpoint["ema_model"] = checkpoint["model"]
         Checkpoint.load_objects(to_load=to_save, checkpoint=checkpoint, strict=False)
 
-    return trainer, ema_model
+    def setup_checkpoint(save_dir: str):
+        modelcheckpoint = ModelCheckpoint(
+            save_dir, filename_prefix="training", n_saved=2
+        )
+        trainer.add_event_handler(
+            Events.ITERATION_COMPLETED(every=10000), modelcheckpoint, to_save
+        )
+
+    return trainer, ema_model, setup_checkpoint
 
 
 def get_dataflow(cfg: DictConfig):
@@ -239,7 +262,7 @@ def training(local_rank, cfg: DictConfig):
     train_loader = get_dataflow(cfg)
     model, noise_scheduler, optimizer, scheduler = initialize(cfg)
 
-    trainer, ema_model = create_trainer(
+    trainer, ema_model, setup_checkpoint = create_trainer(
         model,
         noise_scheduler,
         optimizer,
@@ -276,9 +299,11 @@ def training(local_rank, cfg: DictConfig):
             row_settings=("depth", "var_names"),
         )
 
-        tb_logger = get_logger(
-            trainer, model, noise_scheduler, optimizer, cfg.log_dir, model_name
+        wandb_logger = get_logger(
+            trainer, model, noise_scheduler, optimizer, cfg, model_name
         )
+
+        setup_checkpoint(wandb_logger.run.dir)
 
         @torch.no_grad()
         def generate_samples(engine):
@@ -297,9 +322,11 @@ def training(local_rank, cfg: DictConfig):
                 z_1, gamma, steps, ema_model, *c, with_amp=cfg.with_amp
             )
             generated = z_0.squeeze().clip(-0.99, 0.99)
-            tb_logger.writer.add_audio(
-                "generated", generated, engine.state.iteration, sample_rate=cfg.sr
-            )
+            # tb_logger.writer.add_audio(
+            #     "generated", generated, engine.state.iteration, sample_rate=cfg.sr
+            # )
+            audio = wandb.Audio(generated.cpu().numpy(), sample_rate=cfg.sr)
+            wandb_logger.log({"generated": audio}, commit=False)
 
         @torch.no_grad()
         def plot_noise_curve(engine):
@@ -308,7 +335,8 @@ def training(local_rank, cfg: DictConfig):
             log_snr = -noise_scheduler(steps)[0].detach().cpu().numpy()
             steps = steps.cpu().numpy()
             plt.plot(steps, log_snr)
-            tb_logger.writer.add_figure("log_snr", figure, engine.state.iteration)
+            # tb_logger.writer.add_figure("log_snr", figure, engine.state.iteration)
+            wandb_logger.log({"log_snr": figure}, commit=False)
 
         trainer.add_event_handler(Events.EPOCH_COMPLETED, generate_samples)
         trainer.add_event_handler(Events.EPOCH_COMPLETED, plot_noise_curve)
@@ -316,7 +344,8 @@ def training(local_rank, cfg: DictConfig):
     e = trainer.run(train_loader, max_epochs=cfg.epochs)
 
     if rank == 0:
-        tb_logger.close()
+        # tb_logger.close()
+        wandb_logger.close()
 
 
 @hydra.main(config_path="conf", config_name="config", version_base=None)
