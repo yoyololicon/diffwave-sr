@@ -14,3 +14,4 @@ docs/.bundle/*
 docs/.sass-cache/*
 tmp/
 test_gen/
+wandb/
