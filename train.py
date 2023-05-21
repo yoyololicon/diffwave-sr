@@ -24,31 +24,12 @@ from models import NoiseScheduler, LogSNRLinearScheduler
 
 
 def get_logger(trainer, model, noise_scheduler, optimizer, cfg: DictConfig, model_name):
-    # Create a logger
-    # start_time = datetime.now().strftime('%m%d_%H%M%S')
-    # tb_logger = common.setup_tb_logging(
-    #     output_path=log_dir, trainer=trainer, optimizers=optimizer, log_every_iters=1
-    # )
-
-    # tb_logger.attach(
-    #     trainer,
-    #     event_name=Events.EPOCH_COMPLETED,
-    #     log_handler=WeightsHistHandler(model),
-    # )
-    # tb_logger.attach(
-    #     trainer,
-    #     event_name=Events.EPOCH_COMPLETED,
-    #     log_handler=WeightsHistHandler(noise_scheduler),
-    # )
-
-    # return tb_logger
-
     wandb_logger = common.setup_wandb_logging(
         trainer=trainer,
         optimizers=optimizer,
         log_every_iters=1,
         project="diffwave",
-        name=model_name,
+        # name=model_name,
         config=OmegaConf.to_container(cfg),
     )
 
@@ -228,16 +209,18 @@ def initialize(cfg: DictConfig):
         noise_scheduler = LogSNRLinearScheduler()
     noise_scheduler = idist.auto_model(noise_scheduler)
 
-    parameters = ContiguousParams(
-        chain(model.parameters(), noise_scheduler.parameters())
-    )
+    # parameters = ContiguousParams(
+    #     chain(model.parameters(), noise_scheduler.parameters())
+    # )
+    parameters = chain(model.parameters(), noise_scheduler.parameters())
 
     optim_kwargs: dict = OmegaConf.to_container(cfg.optimizer)
     *module_path, class_name = optim_kwargs.pop("_target_").split(".")
     m = importlib.import_module(".".join(module_path))
     optim_type = getattr(m, class_name)
     optimizer = ZeroRedundancyOptimizer(
-        parameters.contiguous(),
+        # parameters.contiguous(),
+        parameters,
         optim_type,
         parameters_as_bucket_view=False,
         **optim_kwargs,
@@ -307,7 +290,8 @@ def training(local_rank, cfg: DictConfig):
 
         @torch.no_grad()
         def generate_samples(engine):
-            z_1 = torch.randn(1, cfg.sr * cfg.eval_dur, device=device)
+            # z_1 = torch.randn(1, cfg.sr * cfg.eval_dur, device=device)
+            z_1 = torch.randn(1, cfg.eval_samples, device=device)
             steps = torch.linspace(0, 1, cfg.eval_T, device=device)
             gamma, steps = noise_scheduler(steps)
 
@@ -336,7 +320,8 @@ def training(local_rank, cfg: DictConfig):
             steps = steps.cpu().numpy()
             plt.plot(steps, log_snr)
             # tb_logger.writer.add_figure("log_snr", figure, engine.state.iteration)
-            wandb_logger.log({"log_snr": figure}, commit=False)
+            img = wandb.Image(figure)
+            wandb_logger.log({"log_snr": img}, commit=False)
 
         trainer.add_event_handler(Events.EPOCH_COMPLETED, generate_samples)
         trainer.add_event_handler(Events.EPOCH_COMPLETED, plot_noise_curve)
@@ -351,8 +336,11 @@ def training(local_rank, cfg: DictConfig):
 @hydra.main(config_path="conf", config_name="config", version_base=None)
 def run(cfg: DictConfig):
     backend = "nccl"
+    master_port = cfg.master_port
     dist_configs = {"nproc_per_node": torch.cuda.device_count()}
-    with idist.Parallel(backend=backend, **dist_configs) as parallel:
+    with idist.Parallel(
+        backend=backend, master_port=master_port, **dist_configs
+    ) as parallel:
         parallel.run(training, cfg)
 
 
