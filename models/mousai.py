@@ -13,4 +13,7 @@ class Mousai(nn.Module):
         self.unet = UNetV0(dim=1, in_channels=1, **kwargs)
 
     def forward(self, audio, diffusion_step, _=None):
-        return self.unet(audio.unsqueeze(1), diffusion_step).squeeze(1)
+        y = self.unet(audio.unsqueeze(1), diffusion_step)
+        if y.shape[2] < audio.shape[1]:
+            y = torch.cat([y, audio[:, None, y.shape[2] :]], dim=2)
+        return y.squeeze(1)
